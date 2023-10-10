@@ -100,16 +100,17 @@ namespace CrudMVCByKING.Controllers
                 TempData["Error"] = errorDescription;
                 return View(registerDto);
             }
-            return RedirectToAction("Accaunt", "Login");
+            return RedirectToAction("Login", "Account");
+
         }
 
 
-          
+
         [HttpGet]
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
-            return RedirectToAction("Login", "Auth");
+            return RedirectToAction("Login", "Account");
         }
 
         //[HttpGet]
