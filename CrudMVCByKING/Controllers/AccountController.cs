@@ -1,4 +1,4 @@
-﻿using CrudMVCByKING.Models;
+using CrudMVCByKING.Models;
 using CrudMVCByKING.Models.DTOs;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -100,40 +100,20 @@ namespace CrudMVCByKING.Controllers
                 TempData["Error"] = errorDescription;
                 return View(registerDto);
             }
-            return RedirectToAction("Accaunt", "Login");
+            return RedirectToAction("Login", "Account");
+
         }
 
 
-          
+
         [HttpGet]
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
-            return RedirectToAction("Login", "Auth");
+            return RedirectToAction("Login", "Account");
         }
 
-        //[HttpGet]
-        //[Route("Auth/Welcome")]
-        //public async Task<IActionResult> Welcome(int page = 0)
-        //{
-        //    if (page == 0)
-        //    {
-        //        return View();
-        //    }
-        //    return View();
-
-        //}
-
-        //[HttpGet]
-        //public async Task<IActionResult> GetLocation(string location)
-        //{
-        //    if (location == null)
-        //    {
-        //        return Json("Not found");
-        //    }
-        //    var locationResult = await _locationService.GetLocationSearch(location);
-        //    return Json(locationResult);
-        //}
+      
 
 
     }
