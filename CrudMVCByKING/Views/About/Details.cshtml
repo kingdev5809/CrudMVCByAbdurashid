@@ -1,0 +1,31 @@
+﻿@model CrudMVCByKING.Models.DTOs.AboutDto
+
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<div class="p-6 bg-white rounded-lg shadow-md">
+    <h4 class="text-2xl font-semibold mb-4">About</h4>
+    <hr class="mb-4 border-t border-gray-300">
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div class="mb-4">
+            <span class="text-gray-600 font-semibold">Image</span>
+            <img src="@Model.Image" alt="Course Image" class="w-full h-auto mt-2 rounded-lg">
+        </div>   
+
+        <div class="mb-4">
+            <span class="text-gray-600 font-semibold">Description</span>
+            <p class="text-gray-700">@Model.Desc</p>
+        </div>
+
+      
+    </div>
+
+    <div class="mt-6">
+        <a href="@Url.Action("Edit", new { id = Model.Id })" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Edit</a>
+        <a href="@Url.Action("Index")" class="ml-2 text-blue-600 hover:underline">Back to List</a>
+    </div>
+</div>
+
