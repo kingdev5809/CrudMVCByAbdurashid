@@ -113,28 +113,7 @@ namespace CrudMVCByKING.Controllers
             return RedirectToAction("Login", "Account");
         }
 
-        //[HttpGet]
-        //[Route("Auth/Welcome")]
-        //public async Task<IActionResult> Welcome(int page = 0)
-        //{
-        //    if (page == 0)
-        //    {
-        //        return View();
-        //    }
-        //    return View();
-
-        //}
-
-        //[HttpGet]
-        //public async Task<IActionResult> GetLocation(string location)
-        //{
-        //    if (location == null)
-        //    {
-        //        return Json("Not found");
-        //    }
-        //    var locationResult = await _locationService.GetLocationSearch(location);
-        //    return Json(locationResult);
-        //}
+      
 
 
     }
