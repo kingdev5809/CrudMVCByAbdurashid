@@ -5,7 +5,7 @@ using CrudMVCByKING.Models.DTOs;
 using Humanizer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using CrudMVCByKING;
+using CrudMVCByKING.Data;
 
 namespace CrudMVCByKING.Repositories
 {

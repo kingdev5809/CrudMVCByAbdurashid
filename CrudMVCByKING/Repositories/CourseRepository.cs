@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using CloudinaryDotNet.Actions;
+using CrudMVCByKING.Data;
 using CrudMVCByKING.Interfaces;
 using CrudMVCByKING.Models;
 using CrudMVCByKING.Models.DTOs;
@@ -24,12 +25,12 @@ namespace CrudMVCByKING.Repositories
             _photoService = photoService;
         }
        
-        public async Task<CoursesDto> Delete(Guid id)
+        public async Task<Courses> Delete(Guid id)
         {
             var entity = await _context.Set<Courses>().FindAsync(id) ?? throw new Exception("Not found");
             _context.Set<Courses>().Remove(entity);
             await _context.SaveChangesAsync();
-            return _mapper.Map<CoursesDto>(entity);
+            return entity;
         }
 
         public async Task<Courses?> Get(Guid id)
@@ -92,5 +93,6 @@ namespace CrudMVCByKING.Repositories
             return _mapper.Map<CoursesDto>(entities);
         }
 
+      
     }
 }

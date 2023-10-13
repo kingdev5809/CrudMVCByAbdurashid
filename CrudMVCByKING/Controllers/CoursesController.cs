@@ -3,7 +3,9 @@ using CrudMVCByKING.Models;
 using CrudMVCByKING.Models.DTOs;
 using CrudMVCByKING.Repositories;
 using CrudMVCByKING.Services.Repository;
+using CrudMVCByKING.Validations;
 using Microsoft.AspNetCore.Mvc;
+using NToastNotify;
 
 namespace CrudMVCByKING.Controllers
 {
@@ -11,10 +13,12 @@ namespace CrudMVCByKING.Controllers
     {
         private readonly ICourse _repositoryService;
         private readonly IPhotoService _photoService;
-        public CoursesController(ICourse repositoryService, IPhotoService photoService)
+        private readonly IToastNotification _toastNotification;
+        public CoursesController(ICourse repositoryService, IPhotoService photoService, IToastNotification toastNotification)
         {
             _repositoryService = repositoryService;
             _photoService = photoService;
+            _toastNotification = toastNotification;
         }
 
         public async Task<IActionResult> Index()
@@ -54,6 +58,16 @@ namespace CrudMVCByKING.Controllers
         {
             try
             {
+                var validator = new CourseValidator();
+                var validationResult = await validator.ValidateAsync(data);
+                if (!validationResult.IsValid)
+                {
+                    foreach (var error in validationResult.Errors)
+                    {
+                        _toastNotification.AddErrorToastMessage(error.ErrorMessage);
+                    }
+                    return View(data);
+                }
                 await _repositoryService.Add(data);
 
                 return RedirectToAction(nameof(Index));

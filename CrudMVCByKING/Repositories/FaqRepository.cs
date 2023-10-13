@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using CrudMVCByKING.Data;
 using CrudMVCByKING.Models;
 using CrudMVCByKING.Models.DTOs;
 using CrudMVCByKING.Services.Repository;

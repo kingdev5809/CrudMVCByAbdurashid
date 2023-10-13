@@ -6,6 +6,9 @@ using CrudMVCByKING.Interfaces;
 
 using CrudMVCByKING.Models;
 using Microsoft.AspNetCore.Mvc;
+using NToastNotify;
+using CrudMVCByKING.Validations;
+using Microsoft.EntityFrameworkCore;
 
 namespace CrudMVCByKING.Controllers
 {
@@ -13,10 +16,12 @@ namespace CrudMVCByKING.Controllers
     public class HomeworksController : Controller
     {
         private readonly IHomeworks _repositoryService;
+        private readonly IToastNotification _toastNotification;
 
-        public HomeworksController( IHomeworks repository)
+        public HomeworksController( IHomeworks repository, IToastNotification toastNotification)
         {
-            _repositoryService = repository;            
+            _repositoryService = repository;
+            _toastNotification = toastNotification;
         }
 
         public async Task<IActionResult> Index()
@@ -49,6 +54,11 @@ namespace CrudMVCByKING.Controllers
             var homeworkViewModel = new HomeworkViewModel();
             homeworkViewModel.Homework = new HomeworkDto();
             homeworkViewModel.Lessons = await _repositoryService.GetLessons();
+            if (homeworkViewModel.Lessons.Count == 0)
+            {
+                _toastNotification.AddErrorToastMessage("You need first create lesson ");
+                return RedirectToAction(nameof(Index));
+            }
             return View(homeworkViewModel);
         }
 
@@ -59,6 +69,17 @@ namespace CrudMVCByKING.Controllers
         {
             try
             {
+                var validator = new HomeworkValidator();
+                var validationResult = await validator.ValidateAsync(data.Homework);
+                if (!validationResult.IsValid)
+                {
+                    foreach (var error in validationResult.Errors)
+                    {
+                        _toastNotification.AddErrorToastMessage(error.ErrorMessage);
+                    }
+                    data.Lessons = await _repositoryService.GetLessons();
+                    return View(data);
+                }
                 await _repositoryService.Add(data.Homework);
                 return RedirectToAction(nameof(Index));
             }

@@ -1,18 +1,25 @@
-﻿using CrudMVCByKING.Interfaces;
+﻿using CrudMVCByKING.Data;
+using CrudMVCByKING.Interfaces;
 using CrudMVCByKING.Models;
 using CrudMVCByKING.Models.DTOs;
+using CrudMVCByKING.Validations;
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using NToastNotify;
 
 namespace CrudMVCByKING.Controllers
 {
-    
+
     public class LessonsController : Controller
     {
         private readonly ILessons _repositoryService;
+        private readonly IToastNotification _toastNotification;
         private readonly UsersDbContext _context;
-        public LessonsController(UsersDbContext context, ILessons repository)
+        public LessonsController(UsersDbContext context, ILessons repository,IToastNotification toastNotification)
         {
             _repositoryService = repository;
+            _toastNotification = toastNotification;
             _context = context;
         }
         public async Task<IActionResult> Index()
@@ -40,11 +47,16 @@ namespace CrudMVCByKING.Controllers
 
 
 
-        public IActionResult Create()
+        public  IActionResult Create()
         {
             var lessonCreateViewModel = new LessonCreateViewModel();
             lessonCreateViewModel.Lesson = new LessonsDto();
             lessonCreateViewModel.Courses = _context.Courses.ToList();
+            if (lessonCreateViewModel.Courses.Count == 0)
+            {
+                _toastNotification.AddErrorToastMessage("You need first create course ");
+                return RedirectToAction(nameof(Index)); 
+            }
             return View(lessonCreateViewModel);
         }
 
@@ -55,6 +67,17 @@ namespace CrudMVCByKING.Controllers
         {
             try
             {
+                var validator = new LessonValidator();
+                var validationResult = await validator.ValidateAsync(data.Lesson);
+                if (!validationResult.IsValid)
+                {
+                    foreach (var error in validationResult.Errors)
+                    {
+                        _toastNotification.AddErrorToastMessage(error.ErrorMessage);
+                    }
+                    data.Courses = await _context.Courses.ToListAsync();
+                    return View(data);
+                }
                 await _repositoryService.Add(data.Lesson);
                 return RedirectToAction(nameof(Index));
             }

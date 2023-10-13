@@ -68,13 +68,13 @@
                         {
                             <span class="block text-sm text-gray-900 dark:text-white">
                                 @user.UserName
-                             </span>
-                             <span class="block text-sm  text-gray-500 truncate dark:text-gray-400">
-                                    @user.Email
-                             </span>
-                          }
-                            
-                        </div>
+                            </span>
+                            <span class="block text-sm  text-gray-500 truncate dark:text-gray-400">
+                                @user.Email
+                            </span>
+                        }
+
+                    </div>
                     <ul class="py-2" aria-labelledby="user-menu-button">
                         @*<li>
                                 <a href="#"
@@ -190,11 +190,6 @@
                 </div>
             </footer>*@
     </div>
-
-
-
-
-
     <script src="https://kit.fontawesome.com/4ee5d5668b.js" crossorigin="anonymous"></script>
     <script src="~/js/mvc-grid/mvc-grid.js"></script>
     <script>
@@ -202,5 +197,7 @@
     </script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
+    @await Component.InvokeAsync("NToastNotify")
+
 </body>
 </html>

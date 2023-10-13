@@ -9,6 +9,7 @@ namespace CrudMVCByKING.Interfaces
         Task<Courses?> Get(Guid id);
         Task<CoursesDto> Add(CoursesDto entity);
         Task<CoursesDto> Update(CoursesDto entity);
-        Task<CoursesDto> Delete(Guid id);
+        Task<Courses> Delete(Guid id);
+
     }
 }

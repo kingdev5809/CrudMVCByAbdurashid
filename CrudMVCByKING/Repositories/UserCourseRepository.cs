@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using CrudMVCByKING.Interfaces;
 using CrudMVCByKING.Models;
+using CrudMVCByKING.Data;
 
 namespace CrudMVCByKING.Repositories
 {

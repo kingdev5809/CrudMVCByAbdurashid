@@ -58,8 +58,13 @@ namespace CrudMVCByKING.Controllers
         {
             try
             {
-                await _repositoryService.Add(data);
-                return RedirectToAction(nameof(Index));
+                if (ModelState.IsValid)
+                {
+                    await _repositoryService.Add(data);
+
+                    return RedirectToAction(nameof(Index));
+                }
+                return View(data);  
             }
             catch (Exception ex)
             {

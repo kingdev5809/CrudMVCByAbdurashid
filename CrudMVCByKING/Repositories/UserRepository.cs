@@ -8,6 +8,7 @@ using System.Text;
 using CrudMVCByKING.Interfaces;
 using CrudMVCByKING.Models;
 using CrudMVCByKING.Models.DTOs;
+using CrudMVCByKING.Data;
 
 namespace CrudMVCByKING.Repositories
 {

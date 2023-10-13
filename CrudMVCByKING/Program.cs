@@ -1,7 +1,6 @@
 using CrudMVCByKING.Interfaces;
 using CrudMVCByKING.Repositories;
 using Microsoft.EntityFrameworkCore;
-using CrudMVCByKING;
 using CrudMVCByKING.Models.DTOs;
 using CrudMVCByKING.Services.Repository;
 using CrudMVCByKING.Helpers;
@@ -9,6 +8,9 @@ using CrudMVCByKING.Services;
 using CrudMVCByKING.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.Cookies;
+
+using NToastNotify;
+using CrudMVCByKING.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,11 +37,19 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
 
 builder.Services.AddDbContext<UsersDbContext>(option =>
     option.UseNpgsql(builder.Configuration.GetConnectionString("connection")));
-
 builder.Services.AddMemoryCache();
 builder.Services.AddSession();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
        .AddCookie();
+
+builder.Services.AddRazorPages().AddNToastNotifyNoty(new NotyOptions
+{
+    ProgressBar = true,
+    Timeout = 5000
+});
+
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -56,7 +66,9 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthentication();
+app.UseNToastNotify();
 
+app.MapRazorPages();
 app.UseAuthorization();
 
 app.MapControllerRoute(

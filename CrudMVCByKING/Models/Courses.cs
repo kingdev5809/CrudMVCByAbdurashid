@@ -9,9 +9,9 @@ public class Courses : IEntity
     public string? Image { get; set; }
     public string? Title { get; set; }
     public string? Desc { get; set; }
-    public string? Price { get; set; }
-    public List<Users> Users { get; } = new();
-    public ICollection<Lessons> Lessons { get; set; }
+    public int? Price { get; set; }
+    public List<Users>? Users { get; } = new();
+    public ICollection<Lessons>? Lessons { get; set; }
 
 }
 
