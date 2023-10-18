@@ -1,13 +1,10 @@
 ﻿using AutoMapper;
-using CloudinaryDotNet.Actions;
 using CrudMVCByKING.Data;
 using CrudMVCByKING.Interfaces;
 using CrudMVCByKING.Models;
 using CrudMVCByKING.Models.DTOs;
-using CrudMVCByKING.Services;
-using CrudMVCByKING.Services.Repository;
 using Microsoft.EntityFrameworkCore;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+using Newtonsoft.Json;
 
 namespace CrudMVCByKING.Repositories
 {
@@ -25,12 +22,13 @@ namespace CrudMVCByKING.Repositories
             _photoService = photoService;
         }
        
-        public async Task<Courses> Delete(Guid id)
+        public async Task<CoursesDto> Delete(Guid id)
         {
             var entity = await _context.Set<Courses>().FindAsync(id) ?? throw new Exception("Not found");
             _context.Set<Courses>().Remove(entity);
             await _context.SaveChangesAsync();
-            return entity;
+            return _mapper.Map<CoursesDto>(entity);
+       
         }
 
         public async Task<Courses?> Get(Guid id)
@@ -93,6 +91,37 @@ namespace CrudMVCByKING.Repositories
             return _mapper.Map<CoursesDto>(entities);
         }
 
-      
+
+        public async Task<CoursesDto> CreateAudit(CoursesDto entity, string actionType, ApplicationUser user)
+        {
+            //var userId = await GetCurrentUserAsync();
+
+            var auditTrailRecord = new AuditTrailRecord();
+            auditTrailRecord.UserName = user.UserName;
+            auditTrailRecord.Action = actionType;
+            auditTrailRecord.EntityType = entity.GetType().Name;
+            if (actionType == "Delete")
+            {
+                auditTrailRecord.OldValues = JsonConvert.SerializeObject(entity, Formatting.Indented);
+            }
+            else
+            {
+                auditTrailRecord.NewValues = JsonConvert.SerializeObject(entity, Formatting.Indented);
+            }
+            auditTrailRecord.Timestamp = DateTime.UtcNow;
+
+            _context.AuditTrailRecords.Add(auditTrailRecord);
+            try
+            {
+                await _context.SaveChangesAsync();
+                return entity;
+            }
+            catch (Exception ex)
+            {
+                // Handle or log the exception
+                throw;
+            }
+        }
+
     }
 }

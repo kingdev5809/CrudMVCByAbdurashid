@@ -1,9 +1,8 @@
 ﻿using CrudMVCByKING.Interfaces;
 using CrudMVCByKING.Models;
 using CrudMVCByKING.Models.DTOs;
-using CrudMVCByKING.Repositories;
-using CrudMVCByKING.Services.Repository;
 using CrudMVCByKING.Validations;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using NToastNotify;
 
@@ -14,11 +13,14 @@ namespace CrudMVCByKING.Controllers
         private readonly ICourse _repositoryService;
         private readonly IPhotoService _photoService;
         private readonly IToastNotification _toastNotification;
-        public CoursesController(ICourse repositoryService, IPhotoService photoService, IToastNotification toastNotification)
+        private readonly UserManager<ApplicationUser> _userManager;
+
+        public CoursesController(ICourse repositoryService, IPhotoService photoService, IToastNotification toastNotification, UserManager<ApplicationUser> userManager)
         {
             _repositoryService = repositoryService;
             _photoService = photoService;
             _toastNotification = toastNotification;
+            _userManager = userManager;
         }
 
         public async Task<IActionResult> Index()
@@ -68,7 +70,10 @@ namespace CrudMVCByKING.Controllers
                     }
                     return View(data);
                 }
-                await _repositoryService.Add(data);
+
+               var user = await _userManager.GetUserAsync(HttpContext.User);
+                var course =    await _repositoryService.Add(data);
+                await _repositoryService.CreateAudit(course, "Create", user);
 
                 return RedirectToAction(nameof(Index));
             }
@@ -102,6 +107,9 @@ namespace CrudMVCByKING.Controllers
         {
             try
             {
+
+                var user = await _userManager.GetUserAsync(HttpContext.User);
+                await _repositoryService.CreateAudit(data, "Edit", user);
                 var updatedData = await _repositoryService.Update(data);
                 return RedirectToAction(nameof(Index));
             }
@@ -135,6 +143,8 @@ namespace CrudMVCByKING.Controllers
             try
             {
                 var data = await _repositoryService.Delete(id);
+                var user = await _userManager.GetUserAsync(HttpContext.User);
+                await _repositoryService.CreateAudit(data, "Delete", user);
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)

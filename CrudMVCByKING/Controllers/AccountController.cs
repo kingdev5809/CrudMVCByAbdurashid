@@ -58,7 +58,7 @@ namespace CrudMVCByKING.Controllers
                         TempData["Error"] = "Wrong credentials. Please try again";
                         return View(model);
                     }
-                    return RedirectToAction("Index", "Home");                       
+            return RedirectToAction("Index", "Home");                       
         }
 
  

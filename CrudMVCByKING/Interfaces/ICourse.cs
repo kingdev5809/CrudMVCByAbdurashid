@@ -9,7 +9,8 @@ namespace CrudMVCByKING.Interfaces
         Task<Courses?> Get(Guid id);
         Task<CoursesDto> Add(CoursesDto entity);
         Task<CoursesDto> Update(CoursesDto entity);
-        Task<Courses> Delete(Guid id);
+        Task<CoursesDto> Delete(Guid id);
+        Task<CoursesDto> CreateAudit(CoursesDto entity, string actionType, ApplicationUser user);
 
     }
 }

@@ -1,4 +1,4 @@
-﻿@model CrudMVCByKING.Models.DTOs.AboutDto
+﻿@model CrudMVCByKING.Models.DTOs.ResultDto
 
 
 @{
@@ -16,12 +16,15 @@
         <div class="mb-4">
             <span class="text-gray-600 font-semibold">Image</span>
             <img src="@Model.Image" alt="Course Image" class="w-full h-auto mt-2 rounded-lg">
-        </div>    
-
+        </div>
+        <div class="mb-4">
+            <span class="text-gray-600 font-semibold">Title</span>
+            <img src="@Model.Title" alt="Course Image" class="w-full h-auto mt-2 rounded-lg">
+        </div>
         <div class="mb-4">
             <span class="text-gray-600 font-semibold">Description</span>
             <p class="text-gray-700">@Model.Desc</p>
-        </div>       
+        </div>
     </div>
 
     <form asp-action="DeleteConfirmed">

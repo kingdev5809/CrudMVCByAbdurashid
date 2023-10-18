@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using CrudMVCByKING.Models;
 using CrudMVCByKING.Services.Repository;
+using Microsoft.AspNetCore.Identity;
+
 
 namespace CrudMVCByKING.Controllers
 {
@@ -12,15 +12,18 @@ namespace CrudMVCByKING.Controllers
     public class AppDbController<TDto, TRepository> : Controller
         where TDto : class, IEntityDto
         where TRepository : IRepositoryService<TDto>
+
     {
         private readonly IRepositoryService<TDto> _repositoryService;
-
-        public AppDbController(IRepositoryService<TDto> repository)
+        private readonly UserManager<ApplicationUser> _userManager;
+        public AppDbController(IRepositoryService<TDto> repository, UserManager<ApplicationUser> userManager)
         {
             _repositoryService = repository;
+            _userManager = userManager;
+
         }
 
-  
+
         public async Task<IActionResult> Index()
         {
             var data =  await _repositoryService.GetAll();
@@ -60,6 +63,8 @@ namespace CrudMVCByKING.Controllers
             {
                 if (ModelState.IsValid)
                 {
+                    var user = await _userManager.GetUserAsync(HttpContext.User);
+                    await _repositoryService.CreateAudit(data, "Create", user);
                     await _repositoryService.Add(data);
 
                     return RedirectToAction(nameof(Index));
@@ -99,7 +104,8 @@ namespace CrudMVCByKING.Controllers
                     return BadRequest();
                 }
 
-
+                var user = await _userManager.GetUserAsync(HttpContext.User);
+                await _repositoryService.CreateAudit(data, "Update", user);
                 var updatedData = await _repositoryService.Update(data);
                 return RedirectToAction(nameof(Index));
             }
@@ -132,7 +138,9 @@ namespace CrudMVCByKING.Controllers
         {
             try
             {
-               var data =  await _repositoryService.Delete(id);
+                var user = await _userManager.GetUserAsync(HttpContext.User);
+                var data =  await _repositoryService.Delete(id);
+                await _repositoryService.CreateAudit(data, "Delete", user);
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
@@ -140,5 +148,8 @@ namespace CrudMVCByKING.Controllers
                 return BadRequest(new { Message = ex.Message });
             }
         }
+
+        
+
     }
 }

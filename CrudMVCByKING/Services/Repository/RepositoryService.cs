@@ -1,20 +1,28 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using CrudMVCByKING.Models;
+using Microsoft.AspNetCore.Identity;
+using Newtonsoft.Json;
+using CrudMVCByKING.Data;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CrudMVCByKING.Services.Repository
 {
     public class RepositoryService<TEntity, TDto, TContext> : IRepositoryService<TDto>
           where TEntity : class, IEntity
           where TDto : class, IEntityDto
-          where TContext : DbContext
+          where TContext : UsersDbContext
     {
         private readonly TContext _context;
         private readonly IMapper _mapper;
+
         public RepositoryService(TContext context, IMapper mapper)
         {
             _context = context;
-            _mapper = mapper;   
+            _mapper = mapper;
+
+
+
         }
         public async Task<List<TDto>> GetAll()
         {
@@ -49,6 +57,37 @@ namespace CrudMVCByKING.Services.Repository
             _context.Set<TEntity>().Remove(entity);
             await _context.SaveChangesAsync();
             return _mapper.Map<TDto>(entity);
+        }
+
+        public async Task<TDto> CreateAudit(TDto entity, string actionType, ApplicationUser user)
+        {
+            //var userId = await GetCurrentUserAsync();
+
+            var auditTrailRecord = new AuditTrailRecord();
+            auditTrailRecord.UserName = user.UserName;
+            auditTrailRecord.Action = actionType;
+            auditTrailRecord.EntityType = entity.GetType().Name;
+            if (actionType == "Delete")
+            {
+            auditTrailRecord.OldValues = JsonConvert.SerializeObject(entity, Formatting.Indented);
+            }
+            else
+            {
+                auditTrailRecord.NewValues = JsonConvert.SerializeObject(entity, Formatting.Indented);
+            }
+            auditTrailRecord.Timestamp = DateTime.UtcNow;
+
+            _context.AuditTrailRecords.Add(auditTrailRecord);
+            try
+            {
+                await _context.SaveChangesAsync();
+                return entity;
+            }
+            catch (Exception ex)
+            {
+                // Handle or log the exception
+                throw;
+            }
         }
     }
 }

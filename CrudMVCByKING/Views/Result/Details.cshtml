@@ -1,4 +1,4 @@
-﻿@model CrudMVCByKING.Models.DTOs.AboutDto
+﻿@model CrudMVCByKING.Models.DTOs.ResultDto
 
 
 @{
@@ -6,21 +6,24 @@
 }
 
 <div class="p-6 bg-white rounded-lg shadow-md">
-    <h4 class="text-2xl font-semibold mb-4">About</h4>
+    <h4 class="text-2xl font-semibold mb-4">Result</h4>
     <hr class="mb-4 border-t border-gray-300">
 
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div class="mb-4">
             <span class="text-gray-600 font-semibold">Image</span>
             <img src="@Model.Image" alt="Course Image" class="w-full h-auto mt-2 rounded-lg">
-        </div>   
-
+        </div>
+        <div class="mb-4">
+            <span class="text-gray-600 font-semibold">Title</span>
+            <img src="@Model.Title" alt="Course Image" class="w-full h-auto mt-2 rounded-lg">
+        </div>
         <div class="mb-4">
             <span class="text-gray-600 font-semibold">Description</span>
             <p class="text-gray-700">@Model.Desc</p>
         </div>
 
-      
+
     </div>
 
     <div class="mt-6">

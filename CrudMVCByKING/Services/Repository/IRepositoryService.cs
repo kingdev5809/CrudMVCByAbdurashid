@@ -9,6 +9,7 @@ namespace CrudMVCByKING.Services.Repository
         Task<TDto> Add(TDto entity);
         Task<TDto> Update(TDto entity);
         Task<TDto> Delete(Guid id);
+        Task<TDto> CreateAudit(TDto entity, string actionType, ApplicationUser  user);
     }
 
 }

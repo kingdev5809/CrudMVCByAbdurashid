@@ -10,6 +10,7 @@ public class UsersDbContext : IdentityDbContext<ApplicationUser>
     public UsersDbContext(DbContextOptions<UsersDbContext> options) : base(options) { }
 
     public DbSet<Users> Users { get; set; }
+    public DbSet<AuditTrailRecord> AuditTrailRecords { get; set; }
     public DbSet<Courses> Courses { get; set; }
     public DbSet<UserCourses> UserCourses { get; set; }
     public DbSet<Comments> Comments { get; set; }
@@ -22,7 +23,6 @@ public class UsersDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<UserStep> UserStep { get; set; }
     public DbSet<Contact> Contact { get; set; }
     public DbSet<About> About { get; set; }
-    public DbSet<AuditLog> AuditLogs { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -90,29 +90,7 @@ entity.HasKey(e => new { e.LoginProvider, e.ProviderKey });
         );
     }
 
-    public override int SaveChanges()
-    {
-        // Capture audit information here and create AuditLog entries
-        // Example code for capturing audit information:
-
-        foreach (var entry in ChangeTracker.Entries())
-        {
-            if (entry.Entity is ApplicationUser || entry.Entity is IdentityRole)
-            {
-                var auditLog = new AuditLog
-                {
-                    UserId ="dawdawdawd" ,
-                    Action = entry.State.ToString(),
-                    EntityName = entry.Entity.GetType().Name,
-                    EntityId = "dawdawdwad",
-                    TimeStamp = DateTime.Now
-                };
-                AuditLogs.Add(auditLog);
-            }
-        }
-
-        return base.SaveChanges();
-    }
+    
 
 
 
